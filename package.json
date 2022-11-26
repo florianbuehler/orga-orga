@@ -8,6 +8,13 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/florianbuehler/orga-orga"
+  },
+  "bugs": {
+    "url": "https://github.com/florianbuehler/orga-orga/issues"
+  },
   "dependencies": {
     "@types/node": "^16.18.3",
     "@types/react": "^18.0.25",
