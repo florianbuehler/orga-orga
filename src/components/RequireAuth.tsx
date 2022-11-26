@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { onIdTokenChanged, User } from 'firebase/auth';
+import AuthenticatedLayout from 'layouts/AuthenticatedLayout';
 import { auth } from './firebase-config';
 
 const RequireAuth: React.FC = () => {
@@ -22,14 +23,7 @@ const RequireAuth: React.FC = () => {
     return <p>loading</p>;
   }
 
-  console.log('user', user);
-
-  return (
-    <>
-      <h1>Protected Route</h1>
-      <Outlet />
-    </>
-  );
+  return <AuthenticatedLayout />;
 };
 
 export default RequireAuth;
