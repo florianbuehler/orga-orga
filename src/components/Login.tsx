@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { onIdTokenChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase-config';
 
 const Login = () => {
@@ -8,13 +8,21 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    return onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        navigate('/');
+      }
+    });
+  }, [navigate]);
+
   const onLogin = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigate('/home');
+        navigate('/');
         console.log(user);
       })
       .catch((error) => {
