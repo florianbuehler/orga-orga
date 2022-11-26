@@ -5,28 +5,20 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "eslint": "eslint src --ext js,ts,tsx",
+    "fix-eslint": "eslint src --ext js,ts,tsx --fix",
     "eject": "react-scripts eject"
   },
-  "dependencies": {
-    "@types/node": "^16.18.3",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.9",
-    "autoprefixer": "^10.4.13",
-    "firebase": "^9.14.0",
-    "firebaseui": "^6.0.2",
-    "postcss": "^8.4.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "tailwindcss": "^3.2.4",
-    "typescript": "^4.9.3",
-    "web-vitals": "^2.1.4"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/florianbuehler/orga-orga"
+  },
+  "bugs": {
+    "url": "https://github.com/florianbuehler/orga-orga/issues"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -40,5 +32,32 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@types/node": "^16.18.3",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "autoprefixer": "^10.4.13",
+    "daisyui": "^2.42.1",
+    "firebase": "^9.14.0",
+    "postcss": "^8.4.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^4.9.3",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.7.1"
   }
 }
