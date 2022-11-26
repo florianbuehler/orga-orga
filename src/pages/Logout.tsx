@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../components/firebase-config';
@@ -6,7 +6,7 @@ import { auth } from '../components/firebase-config';
 const Logout = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  useEffect(() => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
@@ -15,21 +15,18 @@ const Logout = () => {
       .catch((error) => {
         // An error happened.
       });
-  };
+  }, []);
 
   const handleHome = () => {
-    
-    navigate('/');
-        
+    navigate('/login');
   };
 
   return (
     <>
       <p>You were successfully Logged out</p>
-      <button onClick={handleHome}>Return to Home</button>
+      <button onClick={handleHome}>Return to Login</button>
     </>
   );
-
 };
 
 export default Logout;

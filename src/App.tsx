@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { RequireAuth, Login } from 'components';
-import Logout from 'pages/Logout';
+import { RequireAuth } from 'components';
 import Layout from 'layouts/Layout';
+import Login from 'pages/Login';
+import Logout from 'pages/Logout';
 import { ThemeProvider } from 'providers';
 
 function App() {

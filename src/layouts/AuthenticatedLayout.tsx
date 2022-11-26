@@ -1,7 +1,6 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import { ThemeToggle } from 'components';
-import { Logout } from 'pages';
 
 const AuthenticatedLayout: React.FC = () => {
   return (
@@ -18,7 +17,7 @@ const AuthenticatedLayout: React.FC = () => {
             <p>Sidebar Item 2</p>
           </li>
           <li className="mt-auto">
-            <Logout />
+            <NavLink to="/logout">Logout</NavLink>
           </li>
         </ul>
       </aside>
