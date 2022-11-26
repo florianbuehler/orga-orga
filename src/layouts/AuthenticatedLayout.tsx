@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { ThemeToggle, Logout } from 'components';
+import { ThemeToggle } from 'components';
+import { Logout } from 'pages';
 
 const AuthenticatedLayout: React.FC = () => {
   return (
