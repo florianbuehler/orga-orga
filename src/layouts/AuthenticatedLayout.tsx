@@ -5,9 +5,9 @@ import { ThemeToggle } from 'components';
 const AuthenticatedLayout: React.FC = () => {
   return (
     <div className="drawer drawer-mobile">
-      <aside className="drawer-side bg-base-200">
+      <aside className="drawer-side bg-base-200 relative">
+        <ThemeToggle className="absolute top-2 right-2" />
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-        <ThemeToggle />
         <ul className="menu p-4 w-80 text-base-content">
           <li>
             <p>Sidebar Item 1</p>
