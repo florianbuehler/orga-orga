@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { ThemeToggle } from 'components';
+import { ThemeToggle, Logout } from 'components';
 
 const AuthenticatedLayout: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ const AuthenticatedLayout: React.FC = () => {
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 text-base-content">
           <li>
-            <p>Sidebar Item 1</p>
+            <Logout />
           </li>
           <li>
             <p>Sidebar Item 2</p>
