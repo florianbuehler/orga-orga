@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RequireAuth } from 'components';
-import Layout from 'layouts/Layout';
 import Login from 'pages/Login';
 import Logout from 'pages/Logout';
 import { ThemeProvider } from 'providers';
@@ -9,17 +8,15 @@ import { ThemeProvider } from 'providers';
 function App() {
   return (
     <ThemeProvider>
-      <Layout>
-        <Router>
-          <Routes>
-            <Route path="/" element={<RequireAuth />}>
-              <Route index element={<h1 className="text-3xl font-bold underline">Hello world!</h1>} />
-            </Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
-          </Routes>
-        </Router>
-      </Layout>
+      <Router>
+        <Routes>
+          <Route path="/" element={<RequireAuth />}>
+            <Route index element={<h1 className="text-3xl font-bold underline">Hello world!</h1>} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

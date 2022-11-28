@@ -8,6 +8,8 @@ type Props = {
 const ThemeProvider: React.FC<Props> = ({ children }) => {
   const [theme, setTheme] = useState<'dark' | 'light'>('light');
 
+  const themeName = theme === 'light' ? 'bumblebee' : 'dark';
+
   useEffect(() => {
     if (localStorage.theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setTheme('dark');
@@ -24,7 +26,7 @@ const ThemeProvider: React.FC<Props> = ({ children }) => {
         onThemeToggle: (theme) => setTheme(theme)
       }}
     >
-      {children}
+      <div data-theme={themeName}>{children}</div>
     </ThemeContext.Provider>
   );
 };
