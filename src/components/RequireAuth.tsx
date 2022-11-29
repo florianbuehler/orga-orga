@@ -20,7 +20,11 @@ const RequireAuth: React.FC = () => {
   }, [navigate]);
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen flex">
+        <aside className="w-72 bg-base-200" />
+      </div>
+    );
   }
 
   return <AuthenticatedLayout />;
