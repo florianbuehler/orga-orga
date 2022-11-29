@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { ThemeToggle } from 'components';
+import { Icon } from '../components/icons';
 
 const AuthenticatedLayout: React.FC = () => {
   return (
@@ -16,7 +17,10 @@ const AuthenticatedLayout: React.FC = () => {
             <p>Sidebar Item 2</p>
           </li>
           <li className="mt-auto">
-            <NavLink to="/logout">Logout</NavLink>
+            <NavLink to="/logout" className="flex items-center">
+              <Icon name="exit" className="h-5 fill-current" />
+              <span>Logout</span>
+            </NavLink>
           </li>
         </ul>
       </aside>
