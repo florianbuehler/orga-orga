@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { auth } from 'components/firebase-config';
+import { auth } from 'config/firebase-config';
 import UnauthenticatedLayout from 'layouts/UnauthenticatedLayout';
 
 const Logout: React.FC = () => {
