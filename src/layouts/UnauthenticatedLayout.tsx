@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeToggle } from 'components';
+import BaseLayout from './BaseLayout';
 
 type Props = {
   children: React.ReactNode;
@@ -8,10 +8,9 @@ type Props = {
 
 const UnauthenticatedLayout: React.FC<Props> = ({ children, className }) => {
   return (
-    <>
-      <ThemeToggle className="absolute top-4 right-4" />
+    <BaseLayout>
       <main className={className}>{children}</main>
-    </>
+    </BaseLayout>
   );
 };
 
