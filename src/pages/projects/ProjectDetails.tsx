@@ -1,28 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { doc, getDoc } from 'firebase/firestore';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
 
 type Patient = { name: string };
-type ProjectDetails = { name: string; patients?: Patient[] };
+type Project = { name: string; patients: Patient[] };
 
-const getProjectDetailsFromFirestore = async (projectId: string): Promise<ProjectDetails> => {
-  const querySnapshot = await getDoc(doc(database, `projects`, projectId));
+const getProjectDetailsFromFirestore = async (projectId: string): Promise<Project> => {
+  const projectQuerySnapshotTask = getDoc(doc(database, `projects/${projectId}`));
+  const patientsQuerySnapshotTask = getDocs(collection(database, `projects/${projectId}/patients`));
 
-  return querySnapshot.data() as ProjectDetails;
+  const projectQuerySnapshot = await projectQuerySnapshotTask;
+  const patientsQuerySnapshot = await patientsQuerySnapshotTask;
+
+  const patients = patientsQuerySnapshot.docs.map((patient) => patient.data() as Patient);
+
+  return {
+    name: projectQuerySnapshot.data()?.name,
+    patients: patients
+  };
 };
+
+const addPatientToFirestore = (projectId: string, patient: Patient) =>
+  addDoc(collection(database, `projects/${projectId}/patients`), patient);
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
+  const queryClient = useQueryClient();
 
-  const [patients, setPatients] = useState();
   const [newPatientName, setNewPatientName] = useState<string | null>();
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const { data } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
-  console.log(data);
+  const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
+  console.log(project);
+
+  const { mutate: addPatientToProject } = useMutation(
+    (patient: Patient) => addPatientToFirestore(projectId!, patient),
+    {
+      onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
+    }
+  );
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -33,13 +52,14 @@ const ProjectDetails: React.FC = () => {
 
   const handleAddPatient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    addPatientToProject({ name: newPatientName! });
+
     setShowModal(false);
     setNewPatientName(null);
-
-    console.log(newPatientName);
   };
 
-  if (!patients) {
+  if (project?.patients.length === 0) {
     return (
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
