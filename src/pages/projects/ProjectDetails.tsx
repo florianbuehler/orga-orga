@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { doc, getDoc } from 'firebase/firestore';
 import { Icon } from 'components/icons';
+import { database } from 'config/firebase-config';
+
+type Patient = { name: string };
+type ProjectDetails = { name: string; patients?: Patient[] };
+
+const getProjectDetailsFromFirestore = async (projectId: string): Promise<ProjectDetails> => {
+  const querySnapshot = await getDoc(doc(database, `projects`, projectId));
+
+  return querySnapshot.data() as ProjectDetails;
+};
 
 const ProjectDetails: React.FC = () => {
+  const { projectId } = useParams();
+
   const [patients, setPatients] = useState();
   const [newPatientName, setNewPatientName] = useState<string | null>();
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { data } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
+  console.log(data);
 
   const handleCloseModal = () => {
     setShowModal(false);
