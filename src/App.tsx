@@ -1,10 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { RequireAuth } from 'components';
-import Login from 'pages/Login';
-import Logout from 'pages/Logout';
-import NoMatch from 'pages/NoMatch';
 import { ThemeProvider } from 'providers';
+import { LoginPage, LogoutPage, NoMatchPage, ProjectDetailsPage } from './pages';
 
 function App() {
   return (
@@ -12,11 +10,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<RequireAuth />}>
-            <Route index element={<h1 className="text-3xl font-bold underline">Hello world!</h1>} />
-            <Route path="*" element={<NoMatch />} />
+            <Route index element={<Navigate to="/projects" />} />
+            <Route path="/projects">
+              <Route index element={<Navigate to="todo-id" />} />
+              <Route path=":id" element={<ProjectDetailsPage />} />
+            </Route>
+            <Route path="*" element={<NoMatchPage />} />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/logout" element={<LogoutPage />} />
         </Routes>
       </Router>
     </ThemeProvider>

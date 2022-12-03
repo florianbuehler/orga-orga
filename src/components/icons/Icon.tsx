@@ -1,7 +1,7 @@
 import React from 'react';
-import { ExitIcon, GitHubIcon } from './index';
+import { ExitIcon, FlaskIcon, GitHubIcon } from './index';
 
-export type IconName = 'exit' | 'github';
+export type IconName = 'exit' | 'flask' | 'github';
 
 type Props = {
   name: IconName;
@@ -11,6 +11,8 @@ const Icon: React.FC<Props> = ({ name, ...props }) => {
   switch (name) {
     case 'exit':
       return <ExitIcon {...props} />;
+    case 'flask':
+      return <FlaskIcon {...props} />;
     case 'github':
       return <GitHubIcon {...props} />;
   }

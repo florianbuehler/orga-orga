@@ -12,10 +12,10 @@ const AuthenticatedLayout: React.FC = () => {
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
           <ul className="menu mt-12 p-4 w-72 text-base-content flex-grow">
             <li>
-              <p>Sidebar Item 1</p>
-            </li>
-            <li>
-              <p>Sidebar Item 2</p>
+              <NavLink to="/projects/todo-id" className="flex items-center">
+                <Icon name="flask" className="h-5 fill-current" />
+                <span>Colon Age</span>
+              </NavLink>
             </li>
             <li className="mt-auto">
               <NavLink to="/logout" className="flex items-center">
