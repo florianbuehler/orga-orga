@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
 
-type Patient = { name: string };
+type Patient = { name: string; createdAt: number };
 type Project = { name: string; patients: Patient[] };
 
 const getProjectDetailsFromFirestore = async (projectId: string): Promise<Project> => {
@@ -34,7 +34,6 @@ const ProjectDetails: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
-  console.log(project);
 
   const { mutate: addPatientToProject } = useMutation(
     (patient: Patient) => addPatientToFirestore(projectId!, patient),
@@ -53,7 +52,7 @@ const ProjectDetails: React.FC = () => {
   const handleAddPatient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addPatientToProject({ name: newPatientName! });
+    addPatientToProject({ name: newPatientName!, createdAt: Date.now() });
 
     setShowModal(false);
     setNewPatientName(null);
@@ -112,7 +111,46 @@ const ProjectDetails: React.FC = () => {
     );
   }
 
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <div className="px-4 py-2">
+      <div className="text-sm breadcrumbs">
+        <ul>
+          <li>
+            <NavLink to=".." className="flex items-center gap-2">
+              <Icon name="flask" className="h-3 fill-current" />
+              Projects
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to={`../${projectId}`} className="flex items-center gap-2">
+              {project?.name}
+            </NavLink>
+          </li>
+        </ul>
+      </div>
+      <div className="mt-8 overflow-x-auto">
+        <h2 className="text-2xl mb-2">Patients</h2>
+        <table className="table w-full">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {project?.patients.map((patient, i) => (
+              <tr key={patient.name}>
+                <th>{i + 1}</th>
+                <td>{patient.name}</td>
+                <td>{new Date(patient.createdAt).toISOString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default ProjectDetails;

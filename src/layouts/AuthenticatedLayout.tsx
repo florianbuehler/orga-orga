@@ -26,7 +26,7 @@ const AuthenticatedLayout: React.FC = () => {
           </ul>
         </aside>
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <main className="drawer-content flex flex-col items-center justify-center">
+        <main className="drawer-content flex flex-col">
           <Outlet />
         </main>
       </div>
