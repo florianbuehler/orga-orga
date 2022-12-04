@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
+import { Patient } from 'types';
+import { AddPatientModal } from '../../components';
 
-type Patient = { name: string; createdAt: number };
 type Project = { name: string; patients: Patient[] };
 
 const getProjectDetailsFromFirestore = async (projectId: string): Promise<Project> => {
@@ -30,9 +31,6 @@ const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
   const queryClient = useQueryClient();
 
-  const [newPatientName, setNewPatientName] = useState<string | null>();
-  const [showModal, setShowModal] = useState<boolean>(false);
-
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
 
   const { mutate: addPatientToProject } = useMutation(
@@ -42,22 +40,6 @@ const ProjectDetails: React.FC = () => {
     }
   );
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setNewPatientName(null);
-  };
-
-  const isSubmitDisabled = !newPatientName;
-
-  const handleAddPatient = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    addPatientToProject({ name: newPatientName!, createdAt: Date.now() });
-
-    setShowModal(false);
-    setNewPatientName(null);
-  };
-
   if (project?.patients.length === 0) {
     return (
       <div className="hero min-h-screen">
@@ -65,46 +47,15 @@ const ProjectDetails: React.FC = () => {
           <div className="max-w-md">
             <h2 className="text-4xl font-bold">No patients yet</h2>
             <p className="py-6">Click the button below to start and add your first patient.</p>
-            <button className="btn btn-primary gap-3" onClick={() => setShowModal(true)}>
-              <Icon name="add-patient" className="h-5 fill-current" />
-              Add patient
-            </button>
-            <input
-              type="checkbox"
-              checked={showModal}
-              id="add-patient-modal"
-              className="modal-toggle"
-              onChange={() => null}
-            />
-            <div className="modal ml-72">
-              <div className="modal-box relative">
-                <button className="absolute right-4 top-3 hover:cursor-pointer" onClick={handleCloseModal}>
-                  <Icon name="close" className="h-5 fill-current" />
+            <AddPatientModal
+              trigger={
+                <button className="btn btn-primary gap-3">
+                  <Icon name="add-patient" className="h-5 fill-current" />
+                  Add patient
                 </button>
-                <h3 className="text-lg font-bold mb-6">Add User</h3>
-                <form className="form-control w-full" onSubmit={handleAddPatient}>
-                  <label className="label">
-                    <span className="label-text">Patient ID</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={newPatientName || ''}
-                    className="input input-bordered w-full"
-                    onChange={(e) => setNewPatientName(e.target.value)}
-                  />
-                  <div className="flex gap-2 ml-auto mt-6">
-                    <button type="reset" className="btn btn-ghost gap-3" onClick={handleCloseModal}>
-                      <Icon name="ban" className="h-4 fill-current" />
-                      Cancel
-                    </button>
-                    <button type="submit" className="btn btn-primary gap-3" disabled={isSubmitDisabled}>
-                      <Icon name="add-patient" className="h-4 fill-current" />
-                      Add
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+              }
+              onAddPatient={addPatientToProject}
+            />
           </div>
         </div>
       </div>
@@ -129,7 +80,13 @@ const ProjectDetails: React.FC = () => {
         </ul>
       </div>
       <div className="mt-8 overflow-x-auto">
-        <h2 className="text-2xl mb-2">Patients</h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-2xl">Patients</h2>
+          <AddPatientModal
+            trigger={<Icon name="add-patient" className="h-5 fill-current hover:cursor-pointer" />}
+            onAddPatient={addPatientToProject}
+          />
+        </div>
         <table className="table w-full">
           <thead>
             <tr>
