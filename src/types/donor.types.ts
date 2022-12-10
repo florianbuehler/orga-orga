@@ -1,4 +1,4 @@
-export type Patient = {
+export type Donor = {
   name: string;
   createdAt: number;
 };

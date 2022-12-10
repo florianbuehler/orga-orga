@@ -2,30 +2,30 @@ import React from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
+import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
-import { Patient } from 'types';
-import { AddPatientModal } from '../../components';
+import { Donor } from 'types';
 
-type Project = { name: string; patients: Patient[] };
+type Project = { name: string; donors: Donor[] };
 
 const getProjectDetailsFromFirestore = async (projectId: string): Promise<Project> => {
   const projectQuerySnapshotTask = getDoc(doc(database, `projects/${projectId}`));
-  const patientsQuerySnapshotTask = getDocs(collection(database, `projects/${projectId}/patients`));
+  const donorsQuerySnapshotTask = getDocs(collection(database, `projects/${projectId}/donors`));
 
   const projectQuerySnapshot = await projectQuerySnapshotTask;
-  const patientsQuerySnapshot = await patientsQuerySnapshotTask;
+  const donorsQuerySnapshot = await donorsQuerySnapshotTask;
 
-  const patients = patientsQuerySnapshot.docs.map((patient) => patient.data() as Patient);
+  const donors = donorsQuerySnapshot.docs.map((donor) => donor.data() as Donor);
 
   return {
     name: projectQuerySnapshot.data()?.name,
-    patients: patients
+    donors: donors
   };
 };
 
-const addPatientToFirestore = (projectId: string, patient: Patient) =>
-  addDoc(collection(database, `projects/${projectId}/patients`), patient);
+const addDonorToFirestore = (projectId: string, donor: Donor) =>
+  addDoc(collection(database, `projects/${projectId}/donors`), donor);
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
@@ -33,28 +33,25 @@ const ProjectDetails: React.FC = () => {
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
 
-  const { mutate: addPatientToProject } = useMutation(
-    (patient: Patient) => addPatientToFirestore(projectId!, patient),
-    {
-      onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
-    }
-  );
+  const { mutate: addDonorToProject } = useMutation((donor: Donor) => addDonorToFirestore(projectId!, donor), {
+    onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
+  });
 
-  if (project?.patients.length === 0) {
+  if (project?.donors.length === 0) {
     return (
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h2 className="text-4xl font-bold">No patients yet</h2>
-            <p className="py-6">Click the button below to start and add your first patient.</p>
-            <AddPatientModal
+            <h2 className="text-4xl font-bold">No donors yet</h2>
+            <p className="py-6">Click the button below to start and add your first donor.</p>
+            <AddDonorModal
               trigger={
                 <button className="btn btn-primary gap-3">
-                  <Icon name="add-patient" className="h-5 fill-current" />
-                  Add patient
+                  <Icon name="add-donor" className="h-5 fill-current" />
+                  Add donor
                 </button>
               }
-              onAddPatient={addPatientToProject}
+              onAddDonor={addDonorToProject}
             />
           </div>
         </div>
@@ -81,10 +78,10 @@ const ProjectDetails: React.FC = () => {
       </div>
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl">Patients</h2>
-          <AddPatientModal
-            trigger={<Icon name="add-patient" className="h-5 fill-current hover:cursor-pointer" />}
-            onAddPatient={addPatientToProject}
+          <h2 className="text-2xl">Donors</h2>
+          <AddDonorModal
+            trigger={<Icon name="add-donor" className="h-5 fill-current hover:cursor-pointer" />}
+            onAddDonor={addDonorToProject}
           />
         </div>
         <table className="table w-full">
@@ -96,11 +93,11 @@ const ProjectDetails: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {project?.patients.map((patient, i) => (
-              <tr key={patient.name}>
+            {project?.donors.map((donor, i) => (
+              <tr key={donor.name}>
                 <th>{i + 1}</th>
-                <td>{patient.name}</td>
-                <td>{new Date(patient.createdAt).toISOString()}</td>
+                <td>{donor.name}</td>
+                <td>{new Date(donor.createdAt).toISOString()}</td>
               </tr>
             ))}
           </tbody>

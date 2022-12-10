@@ -1,57 +1,51 @@
 import React, { cloneElement, useState } from 'react';
-import { Patient } from 'types';
+import { Donor } from 'types';
 import { Icon } from './icons';
 
 type Props = {
   trigger: React.ReactElement;
-  onAddPatient: (patient: Patient) => void;
+  onAddDonor: (donor: Donor) => void;
 };
 
-const AddPatientModal: React.FC<Props> = ({ trigger, onAddPatient }) => {
-  const [newPatientName, setNewPatientName] = useState<string | null>();
+const AddDonorModal: React.FC<Props> = ({ trigger, onAddDonor }) => {
+  const [newDonorName, setNewDonorName] = useState<string | null>();
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewPatientName(null);
+    setNewDonorName(null);
   };
 
-  const isSubmitDisabled = !newPatientName;
+  const isSubmitDisabled = !newDonorName;
 
-  const handleAddPatient = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddDonor = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    onAddPatient({ name: newPatientName!, createdAt: Date.now() });
+    onAddDonor({ name: newDonorName!, createdAt: Date.now() });
 
     setShowModal(false);
-    setNewPatientName(null);
+    setNewDonorName(null);
   };
 
   return (
     <>
       {cloneElement(trigger, { onClick: () => setShowModal(true) })}
-      <input
-        type="checkbox"
-        checked={showModal}
-        id="add-patient-modal"
-        className="modal-toggle"
-        onChange={() => null}
-      />
+      <input type="checkbox" checked={showModal} id="add-donor-modal" className="modal-toggle" onChange={() => null} />
       <div className="modal ml-72">
         <div className="modal-box relative">
           <button className="absolute right-4 top-3 hover:cursor-pointer" onClick={handleCloseModal}>
             <Icon name="close" className="h-5 fill-current" />
           </button>
-          <h3 className="text-lg font-bold mb-6">Add Patient</h3>
-          <form className="form-control w-full" onSubmit={handleAddPatient}>
+          <h3 className="text-lg font-bold mb-6">Add Donor</h3>
+          <form className="form-control w-full" onSubmit={handleAddDonor}>
             <label className="label">
-              <span className="label-text">Patient ID</span>
+              <span className="label-text">Donor ID</span>
             </label>
             <input
               type="text"
-              value={newPatientName || ''}
+              value={newDonorName || ''}
               className="input input-bordered w-full"
-              onChange={(e) => setNewPatientName(e.target.value)}
+              onChange={(e) => setNewDonorName(e.target.value)}
             />
             <div className="flex gap-2 ml-auto mt-6">
               <button type="reset" className="btn btn-ghost gap-3" onClick={handleCloseModal}>
@@ -59,7 +53,7 @@ const AddPatientModal: React.FC<Props> = ({ trigger, onAddPatient }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary gap-3" disabled={isSubmitDisabled}>
-                <Icon name="add-patient" className="h-4 fill-current" />
+                <Icon name="add-donor" className="h-4 fill-current" />
                 Add
               </button>
             </div>
@@ -70,4 +64,4 @@ const AddPatientModal: React.FC<Props> = ({ trigger, onAddPatient }) => {
   );
 };
 
-export default AddPatientModal;
+export default AddDonorModal;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { AddPatientIcon, BanIcon, CloseIcon, ExitIcon, FlaskIcon, FloppyDiskIcon, GitHubIcon } from './index';
+import { AddDonorIcon, BanIcon, CloseIcon, ExitIcon, FlaskIcon, FloppyDiskIcon, GitHubIcon } from './index';
 
-export type IconName = 'add-patient' | 'ban' | 'close' | 'exit' | 'flask' | 'floppy-disk' | 'github';
+export type IconName = 'add-donor' | 'ban' | 'close' | 'exit' | 'flask' | 'floppy-disk' | 'github';
 
 type Props = {
   name: IconName;
@@ -9,8 +9,8 @@ type Props = {
 
 const Icon: React.FC<Props> = ({ name, ...props }) => {
   switch (name) {
-    case 'add-patient':
-      return <AddPatientIcon {...props} />;
+    case 'add-donor':
+      return <AddDonorIcon {...props} />;
     case 'ban':
       return <BanIcon {...props} />;
     case 'close':

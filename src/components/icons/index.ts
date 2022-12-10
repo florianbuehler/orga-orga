@@ -1,4 +1,4 @@
-export { default as AddPatientIcon } from './AddPatient';
+export { default as AddDonorIcon } from './AddDonor';
 export { default as BanIcon } from './Ban';
 export { default as CloseIcon } from './Close';
 export { default as ExitIcon } from './Exit';
