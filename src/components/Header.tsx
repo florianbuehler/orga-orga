@@ -8,7 +8,7 @@ type Props = {
 
 const Header: React.FC<Props> = ({ children }) => {
   return (
-    <nav className="flex px-4 py-3">
+    <nav className="flex px-4 py-4">
       {children}
       <div className="flex flex-row items-center gap-3 ml-auto">
         <ThemeToggle />
