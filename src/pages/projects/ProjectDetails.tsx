@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addDonorToFirestore, getProjectDetailsFromFirestore } from 'api';
 import { AddDonorModal, DonorsTable } from 'components';
 import { Icon } from 'components/icons';
 import { AuthenticatedPageLayout } from 'layouts';
-import { NewDonor } from 'types';
+import { NewDonor, Project } from 'types';
+
+type Tab = 'donors' | 'experiments';
+
+const getTabContent = (tab: Tab, project: Project | undefined): React.ReactNode => {
+  switch (tab) {
+    case 'donors':
+      return project && <DonorsTable projectId={project.id} donors={project?.donors} />;
+    case 'experiments':
+      return null;
+  }
+};
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
   const queryClient = useQueryClient();
+
+  const [activeTab, setActiveTab] = useState<Tab>('donors');
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
 
   const { mutate: addDonorToProject } = useMutation((newDonor: NewDonor) => addDonorToFirestore(projectId!, newDonor), {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
-
-  const setActiveTab = (tabName: string) => null;
 
   if (project?.donors.length === 0) {
     return (
@@ -41,6 +52,8 @@ const ProjectDetails: React.FC = () => {
     );
   }
 
+  const getTabClassName = (tab: Tab) => `tab ${activeTab === tab ? 'tab-active' : ''}`;
+
   return (
     <AuthenticatedPageLayout
       breadcrumbs={[
@@ -57,10 +70,10 @@ const ProjectDetails: React.FC = () => {
       </p>
       <div className="flex justify-between items-center mt-10">
         <div className="tabs tabs-boxed">
-          <div className="tab tab-active" onClick={() => setActiveTab('experiments')}>
+          <div className={getTabClassName('donors')} onClick={() => setActiveTab('donors')}>
             Donors
           </div>
-          <div className="tab" onClick={() => setActiveTab('experiments')}>
+          <div className={getTabClassName('experiments')} onClick={() => setActiveTab('experiments')}>
             Experiments
           </div>
         </div>
@@ -69,7 +82,7 @@ const ProjectDetails: React.FC = () => {
           onAddDonor={addDonorToProject}
         />
       </div>
-      <DonorsTable projectId={projectId!} donors={project?.donors} />
+      {getTabContent(activeTab, project)}
     </AuthenticatedPageLayout>
   );
 };
