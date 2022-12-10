@@ -8,6 +8,7 @@ import {
   FlaskIcon,
   FloppyDiskIcon,
   GitHubIcon,
+  HandsHoldingHeartIcon,
   ProjectIcon
 } from './index';
 
@@ -20,6 +21,7 @@ export type IconName =
   | 'flask'
   | 'floppy-disk'
   | 'github'
+  | 'hands-holding-heart'
   | 'project';
 
 type Props = {
@@ -44,6 +46,8 @@ const Icon: React.FC<Props> = ({ name, ...props }) => {
       return <FloppyDiskIcon {...props} />;
     case 'github':
       return <GitHubIcon {...props} />;
+    case 'hands-holding-heart':
+      return <HandsHoldingHeartIcon {...props} />;
     case 'project':
       return <ProjectIcon {...props} />;
   }

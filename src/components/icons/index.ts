@@ -6,6 +6,7 @@ export { default as ExitIcon } from './Exit';
 export { default as FlaskIcon } from './Flask';
 export { default as FloppyDiskIcon } from './FloppyDisk';
 export { default as GitHubIcon } from './GitHub';
+export { default as HandsHoldingHeartIcon } from './HandsHoldingHeart';
 export { default as Icon } from './Icon';
 export { default as ProjectIcon } from './Project';
 

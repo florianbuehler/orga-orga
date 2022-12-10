@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Header } from 'components';
+import { Header, SidebarProjectItem } from 'components';
 import { Icon, IconName } from 'components/icons';
 
 type Breadcrumb = {
@@ -23,10 +23,7 @@ const AuthenticatedPageLayout: React.FC<Props> = ({ children, className, breadcr
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu mt-12 p-4 w-72 text-base-content flex-grow">
           <li>
-            <NavLink to="/projects/9CvSuKw4csagC88dezBk" className="flex items-center">
-              <Icon name="project" className="h-5 fill-current" />
-              <span>Colon Age</span>
-            </NavLink>
+            <SidebarProjectItem projectId="9CvSuKw4csagC88dezBk" />
           </li>
           <li className="mt-auto">
             <NavLink to="/logout" className="flex items-center">
