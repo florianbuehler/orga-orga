@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
 import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
@@ -29,6 +29,9 @@ const getProjectDetailsFromFirestore = async (projectId: string): Promise<Projec
 const addDonorToFirestore = (projectId: string, newDonor: NewDonor) =>
   addDoc(collection(database, `projects/${projectId}/donors`), newDonor);
 
+const deleteDonor = (projectId: string, donor: donor) =>
+  deleteDoc(doc(database, `projects/${projectId}/donors`, donor.id));
+
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
   const queryClient = useQueryClient();
@@ -38,6 +41,29 @@ const ProjectDetails: React.FC = () => {
   const { mutate: addDonorToProject } = useMutation((newDonor: NewDonor) => addDonorToFirestore(projectId!, newDonor), {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
+
+  const { mutate: deleteDonorFromProject } = useMutation((Donor: donor) => deleteDonor(projectId!, donor), {
+    onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
+  });
+
+  const [showModalDeleteDonor, setShowModalDeleteDonor] = useState<boolean>(false);
+  const [donorToDelete, setdonorToDelete] = useState<Donor | null>();
+
+  const setModalDeleteDonor = (Donor: donor) => {
+    setdonorToDelete(donor);
+    setShowModalDeleteDonor(true);
+  };
+  
+  const handleCloseModal = () => {
+    setShowModalDeleteDonor(false);
+  };
+  
+  const handleDeleteDonor = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setShowModalDeleteDonor(false);
+    deleteDonorFromProject(donor);
+  };
 
   if (project?.donors.length === 0) {
     return (
@@ -82,7 +108,7 @@ const ProjectDetails: React.FC = () => {
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl">Donors</h2>
           <AddDonorModal
-            trigger={<Icon name="add-donor" className="h-5 fill-current hover:cursor-pointer" />}
+            trigger={<button>Löschen</button>}
             onAddDonor={addDonorToProject}
           />
         </div>
@@ -92,6 +118,7 @@ const ProjectDetails: React.FC = () => {
               <th></th>
               <th>ID</th>
               <th>Created At</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -100,12 +127,36 @@ const ProjectDetails: React.FC = () => {
                 <th>{i + 1}</th>
                 <td>{donor.name}</td>
                 <td>{new Date(donor.createdAt).toISOString()}</td>
+                <td>
+                <Icon name="exit" className="h-5 fill-current hover:cursor-pointer" onClick={() => setModalDeleteDonor(donor)} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <input type="checkbox" checked={showModalDeleteDonor} id="add-donor-modal" className="modal-toggle" onChange={() => null} />
+      <div className="modal ml-72">
+        <div className="modal-box relative">
+          <button className="absolute right-4 top-3 hover:cursor-pointer" onClick={handleCloseModal}>
+            <Icon name="close" className="h-5 fill-current" />
+          </button>
+          <h3 className="text-lg font-bold mb-6">Delete Donor</h3>
+          <form className="form-control w-full" onSubmit={handleDeleteDonor}>
+            <div className="flex gap-2 ml-auto mt-6">
+              <button type="reset" className="btn btn-ghost gap-3" onClick={handleCloseModal}>
+                <Icon name="ban" className="h-4 fill-current" />
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary gap-3">
+                <Icon name="add-donor" className="h-4 fill-current" />
+                Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+    
   );
 };
 
