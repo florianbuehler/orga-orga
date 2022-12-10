@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from 'config/firebase-config';
-import UnauthenticatedLayout from 'layouts/UnauthenticatedLayout';
+import { UnauthenticatedPageLayout } from 'layouts';
 
 const Logout: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Logout: React.FC = () => {
   }, []);
 
   return (
-    <UnauthenticatedLayout className="hero min-h-screen bg-base-200">
+    <UnauthenticatedPageLayout className="hero min-h-screen bg-base-200">
       <div className="hero-content text-center">
         <div className="max-w-md">
           <h1 className="text-5xl font-bold">Logout</h1>
@@ -29,7 +29,7 @@ const Logout: React.FC = () => {
           </button>
         </div>
       </div>
-    </UnauthenticatedLayout>
+    </UnauthenticatedPageLayout>
   );
 };
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { onIdTokenChanged, User } from 'firebase/auth';
 import { auth } from 'config/firebase-config';
-import AuthenticatedLayout from 'layouts/AuthenticatedLayout';
 
 const RequireAuth: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ const RequireAuth: React.FC = () => {
     );
   }
 
-  return <AuthenticatedLayout />;
+  return <Outlet />;
 };
 
 export default RequireAuth;

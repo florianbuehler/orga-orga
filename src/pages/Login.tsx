@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onIdTokenChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from 'config/firebase-config';
-import UnauthenticatedLayout from 'layouts/UnauthenticatedLayout';
+import { UnauthenticatedPageLayout } from 'layouts';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <UnauthenticatedLayout className="hero min-h-screen bg-base-200">
+    <UnauthenticatedPageLayout className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card flex-shrink-0 w-96 shadow-2xl bg-base-100">
           <h1 className="text-4xl font-bold text-center pt-6">Login</h1>
@@ -70,7 +70,7 @@ const Login: React.FC = () => {
           </form>
         </div>
       </div>
-    </UnauthenticatedLayout>
+    </UnauthenticatedPageLayout>
   );
 };
 

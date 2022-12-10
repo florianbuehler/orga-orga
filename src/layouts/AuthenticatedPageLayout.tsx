@@ -1,9 +1,14 @@
 import React from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Icon } from 'components/icons';
 import BaseLayout from './BaseLayout';
 
-const AuthenticatedLayout: React.FC = () => {
+type Props = {
+  children: React.ReactNode;
+  className?: string;
+};
+
+const AuthenticatedPageLayout: React.FC<Props> = ({ children, className }) => {
   return (
     <BaseLayout>
       <div className="drawer drawer-mobile">
@@ -26,12 +31,10 @@ const AuthenticatedLayout: React.FC = () => {
           </ul>
         </aside>
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <main className="drawer-content flex flex-col">
-          <Outlet />
-        </main>
+        <main className={`drawer-content flex flex-col ${className}`}>{children}</main>
       </div>
     </BaseLayout>
   );
 };
 
-export default AuthenticatedLayout;
+export default AuthenticatedPageLayout;

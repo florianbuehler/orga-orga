@@ -6,7 +6,7 @@ type Props = {
   className?: string;
 };
 
-const UnauthenticatedLayout: React.FC<Props> = ({ children, className }) => {
+const UnauthenticatedPageLayout: React.FC<Props> = ({ children, className }) => {
   return (
     <BaseLayout>
       <main className={className}>{children}</main>
@@ -14,4 +14,4 @@ const UnauthenticatedLayout: React.FC<Props> = ({ children, className }) => {
   );
 };
 
-export default UnauthenticatedLayout;
+export default UnauthenticatedPageLayout;

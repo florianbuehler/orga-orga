@@ -1,10 +1,11 @@
 import React from 'react';
-import { useParams, NavLink } from 'react-router-dom';
+import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
+import { AuthenticatedPageLayout } from 'layouts';
 import { Donor, NewDonor } from 'types';
 
 type Project = { name: string; donors: Donor[] };
@@ -34,6 +35,7 @@ const addDonorToFirestore = (projectId: string, newDonor: NewDonor) =>
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
@@ -65,7 +67,7 @@ const ProjectDetails: React.FC = () => {
   }
 
   return (
-    <div className="px-4 py-2">
+    <AuthenticatedPageLayout className="px-4 py-2">
       <div className="text-sm breadcrumbs">
         <ul>
           <li>
@@ -99,7 +101,7 @@ const ProjectDetails: React.FC = () => {
           </thead>
           <tbody>
             {project?.donors.map((donor, i) => (
-              <tr key={donor.name}>
+              <tr key={donor.name} onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
                 <th>{i + 1}</th>
                 <td>{donor.name}</td>
                 <td>{new Date(donor.createdAt).toISOString()}</td>
@@ -108,7 +110,7 @@ const ProjectDetails: React.FC = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </AuthenticatedPageLayout>
   );
 };
 
