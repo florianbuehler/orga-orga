@@ -33,7 +33,7 @@ const getProjectDetailsFromFirestore = async (projectId: string): Promise<Projec
 const addDonorToFirestore = (projectId: string, newDonor: NewDonor) =>
   addDoc(collection(database, `projects/${projectId}/donors`), newDonor);
 
-const deleteDonor = (projectId: string, donor: donor) =>
+const deleteDonor = (projectId: string, donor: Donor) =>
   deleteDoc(doc(database, `projects/${projectId}/donors`, donor.id));
 
 const ProjectDetails: React.FC = () => {
@@ -47,25 +47,23 @@ const ProjectDetails: React.FC = () => {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
 
-  const { mutate: deleteDonorFromProject } = useMutation((Donor: donor) => deleteDonor(projectId!, donor), {
+  const { mutate: deleteDonorFromProject } = useMutation((donor: Donor) => deleteDonor(projectId!, donor), {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
 
   const [showModalDeleteDonor, setShowModalDeleteDonor] = useState<boolean>(false);
   const [donorToDelete, setdonorToDelete] = useState<Donor | null>();
 
-  const setModalDeleteDonor = (Donor: donor) => {
+  const setModalDeleteDonor = (donor: Donor) => {
     setdonorToDelete(donor);
     setShowModalDeleteDonor(true);
   };
-  
+
   const handleCloseModal = () => {
     setShowModalDeleteDonor(false);
   };
-  
-  const handleDeleteDonor = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
+  const handleDeleteDonor = (donor: Donor) => {
     setShowModalDeleteDonor(false);
     deleteDonorFromProject(donor);
   };
@@ -102,10 +100,10 @@ const ProjectDetails: React.FC = () => {
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl">Donors</h2>
-          <AddDonorModal
-            trigger={<button>Löschen</button>}
-            onAddDonor={addDonorToProject}
-          />
+          <AddDonorModal trigger={<Icon
+                    name="add-donor"
+                    className="h-5 fill-current hover:cursor-pointer"
+                  />} onAddDonor={addDonorToProject} />
         </div>
         <table className="table w-full">
           <thead>
@@ -118,40 +116,48 @@ const ProjectDetails: React.FC = () => {
           </thead>
           <tbody>
             {project?.donors.map((donor, i) => (
-              <tr key={donor.name} onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
-                <th>{i + 1}</th>
-                <td>{donor.name}</td>
-                <td>{new Date(donor.createdAt).toISOString()}</td>
+              <tr key={donor.name}>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{i + 1}</td>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{donor.name}</td>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{new Date(donor.createdAt).toISOString()}</td>
                 <td>
-                <Icon name="exit" className="h-5 fill-current hover:cursor-pointer" onClick={() => setModalDeleteDonor(donor)} /></td>
+                  <Icon
+                    name="exit"
+                    className="h-5 fill-current hover:cursor-pointer z-10"
+                    onClick={() => setModalDeleteDonor(donor)}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <input type="checkbox" checked={showModalDeleteDonor} id="add-donor-modal" className="modal-toggle" onChange={() => null} />
+      <input
+        type="checkbox"
+        checked={showModalDeleteDonor}
+        id="add-donor-modal"
+        className="modal-toggle"
+        onChange={() => null}
+      />
       <div className="modal ml-72">
         <div className="modal-box relative">
           <button className="absolute right-4 top-3 hover:cursor-pointer" onClick={handleCloseModal}>
             <Icon name="close" className="h-5 fill-current" />
           </button>
           <h3 className="text-lg font-bold mb-6">Delete Donor</h3>
-          <form className="form-control w-full" onSubmit={handleDeleteDonor}>
-            <div className="flex gap-2 ml-auto mt-6">
-              <button type="reset" className="btn btn-ghost gap-3" onClick={handleCloseModal}>
-                <Icon name="ban" className="h-4 fill-current" />
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-primary gap-3">
-                <Icon name="add-donor" className="h-4 fill-current" />
-                Delete
-              </button>
-            </div>
-          </form>
+          <div className="flex gap-2 ml-auto mt-6">
+            <button type="reset" className="btn btn-ghost gap-3" onClick={handleCloseModal}>
+              <Icon name="ban" className="h-4 fill-current" />
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary gap-3" onClick={() => handleDeleteDonor(donorToDelete!)}>
+              <Icon name="exit" className="h-4 fill-current" />
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </AuthenticatedPageLayout>
-    
   );
 };
 
