@@ -1,40 +1,11 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, doc, getDoc, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
+import { addDonorToFirestore, deleteDonorFromFirestore, getProjectDetailsFromFirestore } from 'api';
 import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
-import { database } from 'config/firebase-config';
 import { AuthenticatedPageLayout } from 'layouts';
 import { Donor, NewDonor } from 'types';
-
-type Project = { name: string; donors: Donor[] };
-
-const getProjectDetailsFromFirestore = async (projectId: string): Promise<Project> => {
-  const projectQuerySnapshotTask = getDoc(doc(database, `projects/${projectId}`));
-  const donorsQuerySnapshotTask = getDocs(collection(database, `projects/${projectId}/donors`));
-
-  const projectQuerySnapshot = await projectQuerySnapshotTask;
-  const donorsQuerySnapshot = await donorsQuerySnapshotTask;
-
-  const donors = donorsQuerySnapshot.docs.map((donor) => {
-    return {
-      id: donor.id,
-      ...donor.data()
-    } as Donor;
-  });
-
-  return {
-    name: projectQuerySnapshot.data()?.name,
-    donors: donors
-  };
-};
-
-const addDonorToFirestore = (projectId: string, newDonor: NewDonor) =>
-  addDoc(collection(database, `projects/${projectId}/donors`), newDonor);
-
-const deleteDonor = (projectId: string, donor: Donor) =>
-  deleteDoc(doc(database, `projects/${projectId}/donors`, donor.id));
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
@@ -47,15 +18,18 @@ const ProjectDetails: React.FC = () => {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
 
-  const { mutate: deleteDonorFromProject } = useMutation((donor: Donor) => deleteDonor(projectId!, donor), {
-    onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
-  });
+  const { mutate: deleteDonorFromProject } = useMutation(
+    (donor: Donor) => deleteDonorFromFirestore(projectId!, donor),
+    {
+      onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
+    }
+  );
 
   const [showModalDeleteDonor, setShowModalDeleteDonor] = useState<boolean>(false);
-  const [donorToDelete, setdonorToDelete] = useState<Donor | null>();
+  const [donorToDelete, setDonorToDelete] = useState<Donor | null>();
 
   const setModalDeleteDonor = (donor: Donor) => {
-    setdonorToDelete(donor);
+    setDonorToDelete(donor);
     setShowModalDeleteDonor(true);
   };
 
@@ -108,10 +82,11 @@ const ProjectDetails: React.FC = () => {
       </div>
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
-          <AddDonorModal trigger={<Icon
-                    name="add-donor"
-                    className="h-5 fill-current hover:cursor-pointer"
-                  />} onAddDonor={addDonorToProject} />
+          <h2 className="text-2xl">Donors</h2>
+          <AddDonorModal
+            trigger={<Icon name="add-donor" className="h-5 fill-current hover:cursor-pointer" />}
+            onAddDonor={addDonorToProject}
+          />
         </div>
         <table className="table w-full">
           <thead>
@@ -125,9 +100,15 @@ const ProjectDetails: React.FC = () => {
           <tbody>
             {project?.donors.map((donor, i) => (
               <tr key={donor.name}>
-                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{i + 1}</td>
-                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{donor.name}</td>
-                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{new Date(donor.createdAt).toISOString()}</td>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
+                  {i + 1}
+                </td>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
+                  {donor.name}
+                </td>
+                <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
+                  {new Date(donor.createdAt).toISOString()}
+                </td>
                 <td>
                   <Icon
                     name="eraser"
