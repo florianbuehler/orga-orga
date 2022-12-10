@@ -16,9 +16,12 @@ const getProjectDetailsFromFirestore = async (projectId: string): Promise<Projec
   const projectQuerySnapshot = await projectQuerySnapshotTask;
   const donorsQuerySnapshot = await donorsQuerySnapshotTask;
 
-  const donors = donorsQuerySnapshot.docs.map((donor) => donor.data() as Donor);
-
-  console.log('donors', donors);
+  const donors = donorsQuerySnapshot.docs.map((donor) => {
+    return {
+      id: donor.id,
+      ...donor.data()
+    } as Donor;
+  });
 
   return {
     name: projectQuerySnapshot.data()?.name,
@@ -90,7 +93,7 @@ const ProjectDetails: React.FC = () => {
           <thead>
             <tr>
               <th></th>
-              <th>ID</th>
+              <th>Name</th>
               <th>Created At</th>
             </tr>
           </thead>
