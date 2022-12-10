@@ -24,7 +24,7 @@ const AuthenticatedPageLayout: React.FC<Props> = ({ children, className, breadcr
         <ul className="menu mt-12 p-4 w-72 text-base-content flex-grow">
           <li>
             <NavLink to="/projects/9CvSuKw4csagC88dezBk" className="flex items-center">
-              <Icon name="flask" className="h-5 fill-current" />
+              <Icon name="project" className="h-5 fill-current" />
               <span>Colon Age</span>
             </NavLink>
           </li>
