@@ -122,7 +122,7 @@ const ProjectDetails: React.FC = () => {
                 <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">{new Date(donor.createdAt).toISOString()}</td>
                 <td>
                   <Icon
-                    name="exit"
+                    name="eraser"
                     className="h-5 fill-current hover:cursor-pointer z-10"
                     onClick={() => setModalDeleteDonor(donor)}
                   />
@@ -151,7 +151,7 @@ const ProjectDetails: React.FC = () => {
               Cancel
             </button>
             <button type="submit" className="btn btn-primary gap-3" onClick={() => handleDeleteDonor(donorToDelete!)}>
-              <Icon name="exit" className="h-4 fill-current" />
+              <Icon name="eraser" className="h-4 fill-current" />
               Delete
             </button>
           </div>
