@@ -51,7 +51,7 @@ const AuthenticatedPageLayout: React.FC<Props> = ({ children, className, breadcr
             </div>
           )}
         </Header>
-        <main className={`flex flex-col px-4 py-2 ${className}`}>{children}</main>
+        <main className={`flex flex-col px-5 py-2 ${className}`}>{children}</main>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ export const getProjectDetailsFromFirestore = async (projectId: string): Promise
   });
 
   return {
+    id: projectQuerySnapshot.id,
     name: projectQuerySnapshot.data()?.name,
     donors: donors
   };
