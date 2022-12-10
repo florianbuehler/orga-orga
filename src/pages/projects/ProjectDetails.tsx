@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useParams, NavLink } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
 import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
+import { AuthenticatedPageLayout } from 'layouts';
 import { Donor, NewDonor } from 'types';
 
 type Project = { name: string; donors: Donor[] };
@@ -16,9 +17,12 @@ const getProjectDetailsFromFirestore = async (projectId: string): Promise<Projec
   const projectQuerySnapshot = await projectQuerySnapshotTask;
   const donorsQuerySnapshot = await donorsQuerySnapshotTask;
 
-  const donors = donorsQuerySnapshot.docs.map((donor) => donor.data() as Donor);
-
-  console.log('donors', donors);
+  const donors = donorsQuerySnapshot.docs.map((donor) => {
+    return {
+      id: donor.id,
+      ...donor.data()
+    } as Donor;
+  });
 
   return {
     name: projectQuerySnapshot.data()?.name,
@@ -34,6 +38,7 @@ const deleteDonor = (projectId: string, donor: donor) =>
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
@@ -88,22 +93,12 @@ const ProjectDetails: React.FC = () => {
   }
 
   return (
-    <div className="px-4 py-2">
-      <div className="text-sm breadcrumbs">
-        <ul>
-          <li>
-            <NavLink to=".." className="flex items-center gap-2">
-              <Icon name="flask" className="h-3 fill-current" />
-              Projects
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to={`../${projectId}`} className="flex items-center gap-2">
-              {project?.name}
-            </NavLink>
-          </li>
-        </ul>
-      </div>
+    <AuthenticatedPageLayout
+      breadcrumbs={[
+        { to: '..', iconName: 'flask', text: 'Projects' },
+        { to: `../${projectId}`, text: project?.name }
+      ]}
+    >
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl">Donors</h2>
@@ -116,14 +111,14 @@ const ProjectDetails: React.FC = () => {
           <thead>
             <tr>
               <th></th>
-              <th>ID</th>
+              <th>Name</th>
               <th>Created At</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {project?.donors.map((donor, i) => (
-              <tr key={donor.name}>
+              <tr key={donor.name} onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
                 <th>{i + 1}</th>
                 <td>{donor.name}</td>
                 <td>{new Date(donor.createdAt).toISOString()}</td>
@@ -155,7 +150,7 @@ const ProjectDetails: React.FC = () => {
           </form>
         </div>
       </div>
-    </div>
+    </AuthenticatedPageLayout>
     
   );
 };

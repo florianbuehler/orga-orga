@@ -6,3 +6,5 @@ export { default as FlaskIcon } from './Flask';
 export { default as FloppyDiskIcon } from './FloppyDisk';
 export { default as GitHubIcon } from './GitHub';
 export { default as Icon } from './Icon';
+
+export type { IconName } from './Icon';

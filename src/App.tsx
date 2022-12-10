@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RequireAuth } from 'components';
 import { ThemeProvider } from 'providers';
-import { LoginPage, LogoutPage, NoMatchPage, ProjectDetailsPage } from './pages';
+import { DonorDetailsPage, LoginPage, LogoutPage, NoMatchPage, ProjectDetailsPage } from './pages';
 
 const queryClient = new QueryClient();
 
@@ -19,7 +19,7 @@ function App() {
               <Route path="/projects">
                 <Route index element={<Navigate to="9CvSuKw4csagC88dezBk" />} />
                 <Route path=":projectId" element={<ProjectDetailsPage />} />
-                <Route path=":projectId/donors/:donorId" />
+                <Route path=":projectId/donors/:donorId" element={<DonorDetailsPage />} />
               </Route>
               <Route path="*" element={<NoMatchPage />} />
             </Route>
