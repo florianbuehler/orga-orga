@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { addDonorToFirestore, getProjectDetailsFromFirestore } from 'api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addDonorToFirestore } from 'api';
 import { AddDonorModal, DonorsTable } from 'components';
 import { Icon } from 'components/icons';
+import { useProjectQuery } from 'hooks';
 import { AuthenticatedPageLayout } from 'layouts';
-import { NewDonor, Project } from 'types';
+import { NewDonor } from 'types';
 
 type Tab = 'donors' | 'experiments';
 
-const getTabContent = (tab: Tab, project: Project | undefined): React.ReactNode => {
+const getTabContent = (tab: Tab, projectId: string): React.ReactNode => {
   switch (tab) {
     case 'donors':
-      return project && <DonorsTable projectId={project.id} donors={project?.donors} />;
+      return <DonorsTable projectId={projectId} />;
     case 'experiments':
       return null;
   }
@@ -24,7 +25,7 @@ const ProjectDetails: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<Tab>('donors');
 
-  const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
+  const { data: project } = useProjectQuery(projectId!);
 
   const { mutate: addDonorToProject } = useMutation((newDonor: NewDonor) => addDonorToFirestore(projectId!, newDonor), {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
@@ -82,7 +83,7 @@ const ProjectDetails: React.FC = () => {
           onAddDonor={addDonorToProject}
         />
       </div>
-      {getTabContent(activeTab, project)}
+      {getTabContent(activeTab, projectId!)}
     </AuthenticatedPageLayout>
   );
 };

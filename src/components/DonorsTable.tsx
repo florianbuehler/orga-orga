@@ -2,27 +2,26 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteDonorFromFirestore } from 'api';
+import { useProjectQuery } from 'hooks';
 import { Donor } from 'types';
 import { Icon } from './icons';
 
 type Props = {
   projectId: string;
-  donors: Donor[] | undefined;
 };
 
-const DonorsTable: React.FC<Props> = ({ projectId, donors }) => {
+const DonorsTable: React.FC<Props> = ({ projectId }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [showModalDeleteDonor, setShowModalDeleteDonor] = useState<boolean>(false);
   const [donorToDelete, setDonorToDelete] = useState<Donor | null>();
 
-  const { mutate: deleteDonorFromProject } = useMutation(
-    (donor: Donor) => deleteDonorFromFirestore(projectId!, donor),
-    {
-      onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
-    }
-  );
+  const { data: project } = useProjectQuery(projectId);
+
+  const { mutate: deleteDonorFromProject } = useMutation((donor: Donor) => deleteDonorFromFirestore(projectId, donor), {
+    onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
+  });
 
   const setModalDeleteDonor = (donor: Donor) => {
     setDonorToDelete(donor);
@@ -51,7 +50,7 @@ const DonorsTable: React.FC<Props> = ({ projectId, donors }) => {
             </tr>
           </thead>
           <tbody>
-            {donors?.map((donor, i) => (
+            {project?.donors.map((donor, i) => (
               <tr key={donor.name}>
                 <td onClick={() => navigate(`donors/${donor.id}`)} className="hover:cursor-pointer">
                   {i + 1}
