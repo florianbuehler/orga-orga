@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { AddDonorModal } from 'components';
@@ -67,22 +67,12 @@ const ProjectDetails: React.FC = () => {
   }
 
   return (
-    <AuthenticatedPageLayout className="px-4 py-2">
-      <div className="text-sm breadcrumbs">
-        <ul>
-          <li>
-            <NavLink to=".." className="flex items-center gap-2">
-              <Icon name="flask" className="h-3 fill-current" />
-              Projects
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to={`../${projectId}`} className="flex items-center gap-2">
-              {project?.name}
-            </NavLink>
-          </li>
-        </ul>
-      </div>
+    <AuthenticatedPageLayout
+      breadcrumbs={[
+        { to: '..', iconName: 'flask', text: 'Projects' },
+        { to: `../${projectId}`, text: project?.name }
+      ]}
+    >
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl">Donors</h2>

@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseLayout from './BaseLayout';
+import { Header } from 'components';
 
 type Props = {
   children: React.ReactNode;
@@ -8,9 +8,10 @@ type Props = {
 
 const UnauthenticatedPageLayout: React.FC<Props> = ({ children, className }) => {
   return (
-    <BaseLayout>
+    <>
+      <Header />
       <main className={className}>{children}</main>
-    </BaseLayout>
+    </>
   );
 };
 

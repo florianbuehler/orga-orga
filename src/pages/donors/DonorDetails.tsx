@@ -1,11 +1,11 @@
 import React from 'react';
-import AuthenticatedPage from '../../layouts/AuthenticatedPageLayout';
+import { AuthenticatedPageLayout } from 'layouts';
 
 const DonorDetails: React.FC = () => {
   return (
-    <AuthenticatedPage>
+    <AuthenticatedPageLayout breadcrumbs={[{ to: '..', iconName: 'flask', text: 'Projects' }]}>
       <h1>donor page</h1>
-    </AuthenticatedPage>
+    </AuthenticatedPageLayout>
   );
 };
 
