@@ -42,6 +42,10 @@ const ProjectDetails: React.FC = () => {
     deleteDonorFromProject(donor);
   };
 
+  const setActiveTab = (tabName: String) => {
+
+  }
+
   if (project?.donors.length === 0) {
     return (
       <div className="hero min-h-screen">
@@ -71,13 +75,17 @@ const ProjectDetails: React.FC = () => {
         { to: `../${projectId}`, text: project?.name }
       ]}
     >
+      <h1 className="text-2xl mb-2">{project?.name}</h1>
+      <div className="tabs tabs-boxed">
+        <div className="tab tab-active" onClick={() => setActiveTab('experiments')}>Donors</div>
+        <div className="tab" onClick={() => setActiveTab('experiments')}>Experiments</div>
+      </div>
       <div className="mt-8 overflow-x-auto">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl">Donors</h2>
-          <AddDonorModal
-            trigger={<Icon name="add-donor" className="h-5 fill-current hover:cursor-pointer" />}
-            onAddDonor={addDonorToProject}
-          />
+          <AddDonorModal trigger={<Icon
+                    name="add-donor"
+                    className="h-5 fill-current hover:cursor-pointer"
+                  />} onAddDonor={addDonorToProject} />
         </div>
         <table className="table w-full">
           <thead>
