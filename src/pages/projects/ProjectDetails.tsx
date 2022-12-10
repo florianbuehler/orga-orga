@@ -5,7 +5,7 @@ import { collection, doc, getDoc, addDoc, getDocs } from 'firebase/firestore';
 import { AddDonorModal } from 'components';
 import { Icon } from 'components/icons';
 import { database } from 'config/firebase-config';
-import { Donor } from 'types';
+import { Donor, NewDonor } from 'types';
 
 type Project = { name: string; donors: Donor[] };
 
@@ -18,14 +18,16 @@ const getProjectDetailsFromFirestore = async (projectId: string): Promise<Projec
 
   const donors = donorsQuerySnapshot.docs.map((donor) => donor.data() as Donor);
 
+  console.log('donors', donors);
+
   return {
     name: projectQuerySnapshot.data()?.name,
     donors: donors
   };
 };
 
-const addDonorToFirestore = (projectId: string, donor: Donor) =>
-  addDoc(collection(database, `projects/${projectId}/donors`), donor);
+const addDonorToFirestore = (projectId: string, newDonor: NewDonor) =>
+  addDoc(collection(database, `projects/${projectId}/donors`), newDonor);
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams();
@@ -33,7 +35,7 @@ const ProjectDetails: React.FC = () => {
 
   const { data: project } = useQuery(['project-details', projectId], () => getProjectDetailsFromFirestore(projectId!));
 
-  const { mutate: addDonorToProject } = useMutation((donor: Donor) => addDonorToFirestore(projectId!, donor), {
+  const { mutate: addDonorToProject } = useMutation((newDonor: NewDonor) => addDonorToFirestore(projectId!, newDonor), {
     onSuccess: () => queryClient.invalidateQueries(['project-details', projectId])
   });
 

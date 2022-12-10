@@ -1,3 +1,4 @@
+export * from './donors';
 export * from './projects';
 
 export { default as LoginPage } from './Login';

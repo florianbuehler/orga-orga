@@ -1,10 +1,10 @@
 import React, { cloneElement, useState } from 'react';
-import { Donor } from 'types';
+import { NewDonor } from 'types';
 import { Icon } from './icons';
 
 type Props = {
   trigger: React.ReactElement;
-  onAddDonor: (donor: Donor) => void;
+  onAddDonor: (newDonor: NewDonor) => void;
 };
 
 const AddDonorModal: React.FC<Props> = ({ trigger, onAddDonor }) => {

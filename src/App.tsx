@@ -19,6 +19,7 @@ function App() {
               <Route path="/projects">
                 <Route index element={<Navigate to="9CvSuKw4csagC88dezBk" />} />
                 <Route path=":projectId" element={<ProjectDetailsPage />} />
+                <Route path=":projectId/donors/:donorId" />
               </Route>
               <Route path="*" element={<NoMatchPage />} />
             </Route>
